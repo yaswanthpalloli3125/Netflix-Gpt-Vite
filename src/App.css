@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+.active-link{
+  color: black;
+  border: 1px solid #fff;
+  background-color: #fff;
+}
+
+.app-bx{
+  height: 100vh;
+  background: rgba(000,000,000);
+ position: relative;
+}
+.app-bx::before{
+  background-image: url(https://assets.nflxext.com/ffe/siteui/vlv3/69bec183-9cc8-49d4-8fc2-08228d3c91b4/web/IN-en-20250414-TRIFECTA-perspective_c8273fb1-8860-4ff5-bd1c-c2c4b44d5f2a_large.jpg);
+  height: 100vh;
+  content: "";
+  position: absolute;
+  inset: 0px;
+  background-position: center center;
+  background-size: cover;
+  opacity: 0.5;
+}
+
+.logo{
+  width: 180px;
+}
+
+.nav-bx{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+
+}
+.home{
+  position: relative;
+  z-index: 2;
+}
+
+.sign-card{
+  width: 350px;
+  position: relative;
+  z-index: 2;
+  background: rgb(23 17 17 / 67%);
+}
+.sign-card input{
+  background-color: rgb(0 0 0 / 80%);
+  margin-bottom: 10px;
+  padding: 16px 18px;
+  border-radius: 4px;
+  color: #fff;
+  display: inline-block;
+  width: 100%;
+}
+
+.sign-heading{
+  font-weight: 700;
+}
+.sign-btn{
+  width: 100%;
+  border-radius: 4px;
+  background: rgb(229, 9, 20);
+  color: #fff;
+ 
+}
+.sign-btn:hover{
+  background: rgb(153, 22, 29);
+}
+
+.click-here{
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+  font-size: 18px;
+}
+
+.err{
+  color: red;
+  font-size: 12px;
+  margin-bottom: 12px;
+  margin-top: -8px;
+}
