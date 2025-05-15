@@ -3,14 +3,21 @@ import { validate } from "../src/utils";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../src/utils/firebase";
+import { useNavigate } from "react-router-dom";
+import { addUser } from "../src/utils/userSlice";
+import { useDispatch } from "react-redux";
 
 const SignPage = () => {
   const [isSignIn, setisSignIn] = useState(true);
 
   const [errorMessage, seterrorMessage] = useState(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
+  const displayName = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
 
@@ -32,7 +39,30 @@ const SignPage = () => {
           // Signed up
           const user = userCredential.user;
           // ...
-          console.log(user);
+          updateProfile(auth.currentUser, {
+            displayName: displayName.current.value,
+            photoURL:
+              "https://occ-0-4085-2164.1.nflxso.net/dnm/api/v6/vN7bi_My87NPKvsBoib006Llxzg/AAAABXz4LMjJFidX8MxhZ6qro8PBTjmHbxlaLAbk45W1DXbKsAIOwyHQPiMAuUnF1G24CLi7InJHK4Ge4jkXul1xIW49Dr5S7fc.png?r=e6e",
+          })
+            .then(() => {
+              // Profile updated!
+              // ...
+              const { uid, email, displayName, photoURL } = auth.currentUser;
+              // ...
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                  photoURL: photoURL,
+                })
+              );
+              navigate("/browse");
+            })
+            .catch((error) => {
+              // An error occurred
+              // ...
+            });
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -50,7 +80,8 @@ const SignPage = () => {
           // Signed in
           const user = userCredential.user;
           // ...
-          console.log(user);
+         
+            navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -71,7 +102,13 @@ const SignPage = () => {
           {isSignIn ? "Sign In" : "Sign Up"}
         </h2>
         <form action="" onSubmit={(e) => e.preventDefault()}>
-          {!isSignIn && <input type="text" placeholder="Enter Name"></input>}
+          {!isSignIn && (
+            <input
+             ref={displayName}
+              type="text"
+              placeholder="Enter Name"
+            ></input>
+          )}
           <input ref={email} type="email" placeholder="Enter Email"></input>
           {errorMessage === "Email is not Valid" && (
             <p className="err">{errorMessage}</p>

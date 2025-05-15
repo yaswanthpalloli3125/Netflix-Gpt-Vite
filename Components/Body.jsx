@@ -1,75 +1,97 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-import { useContext } from "react";
 
-import { BrowserRouter, Route, Routes, Link, NavLink } from "react-router-dom";
 
-import Profile from "../Components/Profile.jsx";
+import {  createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import About from "../Components/About.jsx";
+import Login from "../Components/Login.jsx"
 import Nav from "../Components/Nav.jsx";
 
 
 
-import { createContext } from "react";
-import SignPage from "../Components/SignPage.jsx";
 
-const ThemeContext = createContext();
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../src/utils/firebase.js";
+import { useDispatch } from "react-redux";
+import { addUser, removeUser } from "../src/utils/userSlice.js";
+import Browse from "../Components/Browse.jsx";
 
-const Product = () => {
-  const theme = useContext(ThemeContext);
+// const ThemeContext = createContext();
 
-  return (
-    <div>
-      <h1 style={{ color: theme === "light" ? "blue" : "red" }}>
-        This is product
-      </h1>
-    </div>
-  );
-};
+// const Product = () => {
+//   const theme = useContext(ThemeContext);
 
-const Category = () => {
-  return (
-    <div>
-      <h1 className="text-center">This is Category</h1>
-      <Product />
-    </div>
-  );
-};
+//   return (
+//     <div>
+//       <h1 style={{ color: theme === "light" ? "blue" : "red" }}>
+//         This is product
+//       </h1>
+//     </div>
+//   );
+// };
 
-const Home = () => {
-  const theme = "light";
-  return (
-    <div className="home">
+// const Category = () => {
+//   return (
+//     <div>
+//       <h1 className="text-center">This is Category</h1>
+//       <Product />
+//     </div>
+//   );
+// };
+
+// const Home = () => {
+//   const theme = "light";
+//   return (
+//     <div className="home">
     
 
-      <ThemeContext.Provider value={theme}>
-        <Category />
-      </ThemeContext.Provider>
-    </div>
-  );
-};
+//       <ThemeContext.Provider value={theme}>
+//         <Category />
+//       </ThemeContext.Provider>
+//     </div>
+//   );
+// };
 
 function Body() {
+  
 
+    const dispatch = useDispatch();
+
+    const approuter = createBrowserRouter([
+        {
+       path:'/',
+       element: <Login/>
+       
+    },
+    {
+        path:'/browse',
+        element: <Browse/>,
+    }
+])
+
+    useEffect(()=>{
+     
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+              // User is signed in, see docs for a list of available properties
+              // https://firebase.google.com/docs/reference/js/auth.user
+              const {uid, email, displayName,photoURL} = user;
+              // ...
+              dispatch(addUser({uid:uid, email:email, displayName:displayName,photoURL:photoURL}));
+            } else {
+              // User is signed out
+              dispatch(removeUser());
+            }
+          });
+
+    },[])
   
   return (
-    <div className="app-bx">
+   
   
-      <BrowserRouter>
-      <Nav/>
-      <SignPage/>
-        <Routes>
-          <Route index Component={Home} />
-          <Route path="/profile" Component={Profile} />
-          <Route path="/prfl" >
-            <Route path="/prfl/discuss" element={<h1>Discuss</h1>} />
-            <Route path="/prfl/discuss/sub" element={<h1>Discuss-Sub</h1>} />
-          </Route>
-          <Route path="/about" Component={About} />
-        </Routes>
-      </BrowserRouter>
-      </div>
+   <RouterProvider router={approuter}/>
+   
   );
 }
 
